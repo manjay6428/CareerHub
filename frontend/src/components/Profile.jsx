@@ -1,0 +1,85 @@
+import React, { useState } from "react";
+import Navbar from "./shared/Navbar";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import { Contact, Mail, Pen } from "lucide-react";
+import { Badge } from "./ui/badge";
+import { Label } from "./ui/label";
+import AppliedJobsTable from "./AppliedJobsTable";
+import { useSelector } from "react-redux";
+import ProfileUpdateDialog from "./ProfileUpdateDialog";
+
+const isResume = true;
+const Profile = () => {
+  const { user } = useSelector((state) => state.auth);
+  const [isOpen, setOpen] = useState(false);
+
+  return (
+    <div>
+      <Navbar />
+      <div className=" max-w-7xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8">
+        <div className=" flex items-center justify-between">
+          <div className=" flex items-center gap-4">
+            <Avatar className=" h-20 w-20">
+              <AvatarImage src="https://github.com/shadcn.png" alt="profile" />
+            </Avatar>
+            <div>
+              <h1 className=" font-medium text-xl">{user?.fullName}</h1>
+              <p>{user?.profile?.bio || ""}</p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setOpen(true)}
+            className={"text-right"}
+            variant={"outline"}
+          >
+            <Pen />
+          </Button>
+        </div>
+        <div className=" my-5">
+          <div className=" flex items-center gap-3 my-2">
+            <Mail />
+            <span>{user?.email}</span>
+          </div>
+          <div className=" flex items-center gap-3 my-2">
+            <Contact />
+            <span>{user?.phoneNumber}</span>
+          </div>
+        </div>
+        <div className=" my-5">
+          <h1>Skills</h1>
+          <div className=" flex items-center gap-4">
+            {!user?.profile?.skills.length ? (
+              <span>NA</span>
+            ) : (
+              user?.profile?.skills.map((skill, index) => (
+                <Badge key={index}>{skill}</Badge>
+              ))
+            )}
+          </div>
+        </div>
+        <div className=" grid max-w-sm w-full items-center gap-1.5">
+          <Label className={" text-md font-bold"}>Resume</Label>
+          {isResume ? (
+            <a
+              href="https://drive.google.com/file/d/16Tx58dvfTWKxiwIujTAS34ArEMrnVlg7/view"
+              target="_blank"
+              className=" text-blue-500 cursor-pointer hover:underline"
+            >
+              Manjay Resume
+            </a>
+          ) : (
+            <span>No resume</span>
+          )}
+        </div>
+      </div>
+      <div className=" max-w-4xl mx-auto bg-white rounded-2xl">
+        <h1 className=" font-bold text-lg my-4">Applied jobs</h1>
+        <AppliedJobsTable />
+      </div>
+      <ProfileUpdateDialog isOpen={isOpen} setOpen={setOpen} />
+    </div>
+  );
+};
+
+export default Profile;
