@@ -81,7 +81,6 @@ const Signup = () => {
     e.preventDefault();
 
     if (validate()) {
-      console.log("Form Submitted:", formData);
       setFormData({
         fullName: "",
         email: "",

@@ -12,12 +12,11 @@ import { toast } from "sonner";
 
 const JobDescription = () => {
   const { id } = useParams();
-  // useGetSingleJob(id);
+
   const { singleJob } = useSelector((state) => state.job);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  console.log(singleJob);
 
   const isInitiallyApplied =
     singleJob?.application.some(
@@ -30,7 +29,6 @@ const JobDescription = () => {
       const res = await axios.get(`${APPLICATION_BASE_URL}/apply/${id}`, {
         withCredentials: true,
       });
-      console.log(res.data);
 
       if (res.data.success) {
         setIsApplied(true);
@@ -46,7 +44,6 @@ const JobDescription = () => {
       toast.success(err.response.data.message);
     }
   };
-  console.log(isApplied);
 
   useEffect(() => {
     const fetchSingleJob = async () => {
@@ -54,7 +51,6 @@ const JobDescription = () => {
         const res = await axios.get(`${JOB_BASE_URL}/get/${id}`, {
           withCredentials: true,
         });
-        console.log(res);
 
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
