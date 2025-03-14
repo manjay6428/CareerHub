@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
-import { Diameter, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -83,6 +83,7 @@ const Login = () => {
         }
       } catch (err) {
         console.log(err);
+        toast.success(err.response.data.message);
       } finally {
         dispatch(setLoading(false));
       }
