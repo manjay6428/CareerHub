@@ -1,6 +1,8 @@
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
 const registerUser = async (req, res) => {
   try {
     const { fullName, email, phoneNumber, password, role } = req.body;
@@ -9,6 +11,21 @@ const registerUser = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Enter all the required fields", success: false });
+    }
+    const file = req.file;
+    // const fileUri = getDataUri(file);
+    // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+    let cloudResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      if (fileUri) {
+        cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+          resource_type: "raw",
+          public_id: file.originalname.split(".")[0],
+          overwrite: true,
+        });
+      }
     }
     const checkExistingUser = await User.findOne({ email });
     if (checkExistingUser) {
@@ -23,6 +40,12 @@ const registerUser = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       role,
+
+      ...(cloudResponse && {
+        profile: {
+          profilePhoto: cloudResponse.secure_url,
+        },
+      }),
     });
     return res
       .status(201)
@@ -113,10 +136,20 @@ const logoutUser = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { fullName, email, phoneNumber, bio, skills } = req.body;
-    console.log(fullName, email, phoneNumber, bio, skills);
 
     const file = req.file;
-    console.log(file);
+
+    let cloudResponse;
+    if (file) {
+      const fileUri = getDataUri(file);
+      if (fileUri) {
+        cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+          resource_type: "raw",
+          public_id: file.originalname.split(".")[0],
+          overwrite: true,
+        });
+      }
+    }
 
     //cloudinary aaega idhar
 
@@ -133,8 +166,11 @@ const updateProfile = async (req, res) => {
     if (phoneNumber) user.phoneNumber = phoneNumber;
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skillsArray;
+    if (cloudResponse) {
+      user.profile.resume = cloudResponse.secure_url; //save the cloudinary url
+      user.profile.resumeOriginalName = file.originalname; //save the original file name on resume
+    }
 
-    //resume we will add here
     await user.save();
     user = {
       _id: user._id,

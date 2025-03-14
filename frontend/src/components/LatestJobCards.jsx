@@ -1,7 +1,10 @@
 import React from "react";
 import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
+import { LogIn } from "lucide-react";
 
 const LatestJobCards = ({
+  id,
   companyName,
   location,
   jobTitle,
@@ -10,8 +13,14 @@ const LatestJobCards = ({
   jobType,
   salary,
 }) => {
+  console.log(id);
+
+  const navigate = useNavigate();
   return (
-    <div className=" p-5 rounded-md shadow-xl bg-white border border-gray-100 cursor-pointer">
+    <div
+      className=" p-5 rounded-md shadow-xl bg-white border border-gray-100 cursor-pointer"
+      onClick={() => navigate(`/description/${id}`)}
+    >
       <div>
         <h1 className=" font-medium text-lg">{companyName}</h1>
         <p className=" text-sm text-gray-500">{location}</p>
@@ -28,7 +37,7 @@ const LatestJobCards = ({
           {jobType}
         </Badge>
         <Badge className={"text-[#7209b7] font-bold"} variant={"ghost"}>
-          {salary} lpa
+          {`${salary} ${salary > 100 ? "K/year" : "lpa"}`}
         </Badge>
       </div>
     </div>

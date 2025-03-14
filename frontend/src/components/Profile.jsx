@@ -8,6 +8,8 @@ import { Label } from "./ui/label";
 import AppliedJobsTable from "./AppliedJobsTable";
 import { useSelector } from "react-redux";
 import ProfileUpdateDialog from "./ProfileUpdateDialog";
+import { getInitialName } from "@/utils/constant";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 const isResume = true;
 const Profile = () => {
@@ -19,9 +21,15 @@ const Profile = () => {
       <Navbar />
       <div className=" max-w-7xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8">
         <div className=" flex items-center justify-between">
-          <div className=" flex items-center gap-4">
-            <Avatar className=" h-20 w-20">
-              <AvatarImage src="https://github.com/shadcn.png" alt="profile" />
+          <div className=" flex items-center gap-4 ">
+            <Avatar className="h-20 w-20">
+              <AvatarImage
+                src={user?.profile?.profilePhoto}
+                alt="profile image"
+              />
+              <AvatarFallback className={" ml-4 mt-7 text-2xl"}>
+                {getInitialName(user?.fullName)}
+              </AvatarFallback>
             </Avatar>
             <div>
               <h1 className=" font-medium text-xl">{user?.fullName}</h1>
@@ -62,11 +70,11 @@ const Profile = () => {
           <Label className={" text-md font-bold"}>Resume</Label>
           {isResume ? (
             <a
-              href="https://drive.google.com/file/d/16Tx58dvfTWKxiwIujTAS34ArEMrnVlg7/view"
+              href={user?.profile?.resume || ""}
               target="_blank"
               className=" text-blue-500 cursor-pointer hover:underline"
             >
-              Manjay Resume
+              {user?.profile?.resumeOriginalName}
             </a>
           ) : (
             <span>No resume</span>

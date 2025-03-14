@@ -3,37 +3,47 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { USER_BASE_URL } from "@/utils/constant";
-import { setUser } from "@/redux/authSlice";
+import { getInitialName, USER_BASE_URL } from "@/utils/constant";
+import { setLoading, setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
 
 const Navbar = () => {
-  const { loading, user } = useSelector((state) => state.auth);
-  console.log(loading, user);
+  const { user } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get(`${USER_BASE_URL}/logout`);
+      dispatch(setLoading(true));
+      const res = await axios.get(`${USER_BASE_URL}/logout`, {
+        withCredentials: true,
+      });
+      navigate("/");
       toast.success(res.data.message);
 
       dispatch(setUser(null));
     } catch (err) {
       console.log(err);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
   return (
-    <div className="bg-white shadow-md">
+    <div className="bg-white shadow-md sticky top-0 z-50">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-6">
         {/* Logo */}
         <Link to={"/"}>
           <div>
-            <h1 className="text-3xl font-extrabold tracking-wide">
-              Job<span className="text-[#f83002]">Portal</span>
+            <h1 className="text-3xl font-extrabold tracking-wide font-[Poppins]">
+              Career
+              <span className="text-[#f83002] font-[Dancing Script] text-4xl italic drop-shadow-lg">
+                Hub
+              </span>
             </h1>
           </div>
         </Link>
@@ -75,10 +85,12 @@ const Navbar = () => {
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer ring-2 ring-gray-300 hover:ring-gray-400 transition duration-300">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
+                    src={user?.profile?.profilePhoto}
+                    alt="profile image"
                   />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>
+                    {getInitialName(user?.fullName)}
+                  </AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-72 p-4 shadow-lg rounded-xl border bg-white">
@@ -87,14 +99,19 @@ const Navbar = () => {
                   <div className="flex items-center gap-4 mb-4">
                     <Avatar className="cursor-pointer">
                       <AvatarImage
-                        src="https://github.com/shadcn.png"
-                        alt="@shadcn"
+                        src={user?.profile?.profilePhoto}
+                        alt="profile image"
                       />
+                      <AvatarFallback>
+                        {getInitialName(user?.fullName)}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h4 className="font-semibold text-lg">{user.fullName}</h4>
+                      <h4 className="font-semibold text-lg">
+                        {user?.fullName}
+                      </h4>
                       <p className="text-sm text-gray-500">
-                        Mern Stack Developer
+                        {user?.profile?.bio || "Mern Stack Developer"}
                       </p>
                     </div>
                   </div>

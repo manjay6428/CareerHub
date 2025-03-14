@@ -14,12 +14,11 @@ import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { USER_BASE_URL } from "@/utils/constant";
-import { setUser } from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
 
 const ProfileUpdateDialog = ({ isOpen, setOpen }) => {
-  const [loading, setLoading] = useState(false);
-  const { user } = useSelector((store) => store.auth);
+  const { user, loading } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const [input, setInput] = useState({
     fullName: user?.fullName,
@@ -54,6 +53,7 @@ const ProfileUpdateDialog = ({ isOpen, setOpen }) => {
     console.log(form);
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_BASE_URL}/profile/update`, form, {
         headers: {
           "Content-Type": "multipart//form-data",
@@ -69,9 +69,10 @@ const ProfileUpdateDialog = ({ isOpen, setOpen }) => {
     } catch (err) {
       console.log(err);
       toast.error(err.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
+      setOpen(false);
     }
-    setOpen(false);
-    console.log(input);
   };
   return (
     <div>
