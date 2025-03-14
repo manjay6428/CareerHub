@@ -28,11 +28,8 @@ const ProfileUpdateDialog = ({ isOpen, setOpen }) => {
     skills: user?.profile?.skills?.map((skill) => skill),
     file: user?.profile?.resume,
   });
-  console.log(input);
 
   const changeEventHandler = (e) => {
-    console.log(e.target.value);
-
     setInput({ ...input, [e.target.name]: [e.target.value] });
   };
   const handleFileChange = (e) => {
@@ -50,7 +47,6 @@ const ProfileUpdateDialog = ({ isOpen, setOpen }) => {
     if (input.file) {
       form.append("file", input.file);
     }
-    console.log(form);
 
     try {
       dispatch(setLoading(true));
@@ -60,7 +56,6 @@ const ProfileUpdateDialog = ({ isOpen, setOpen }) => {
         },
         withCredentials: true,
       });
-      console.log(res);
 
       if (res.data.success) {
         dispatch(setUser(res.data.user));

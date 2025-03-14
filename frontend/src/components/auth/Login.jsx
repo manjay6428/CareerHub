@@ -58,7 +58,6 @@ const Login = () => {
     e.preventDefault();
 
     if (validate()) {
-      console.log("Form Submitted:", formData);
       setFormData({
         fullName: "",
         email: "",
@@ -75,8 +74,6 @@ const Login = () => {
           withCredentials: true,
         });
         if (res.data.success) {
-          console.log(res);
-
           navigate("/");
           dispatch(setUser(res.data.userDetails));
           toast.success(res.data.message);

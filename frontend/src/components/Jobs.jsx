@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 const Jobs = () => {
   useGetAllJobs();
   const { allJobs } = useSelector((state) => state.job);
-  console.log(allJobs);
 
   return (
     <div>

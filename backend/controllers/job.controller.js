@@ -82,7 +82,9 @@ const getJobsByIdForUsers = async (req, res) => {
     const jobId = req.params.id;
     const job = await Job.findById(jobId)
       .populate({ path: "company" })
-      .populate({ path: "created_By" });
+      .populate({ path: "created_By" })
+      .populate({ path: "application" });
+
     if (!job) {
       return res.status(404).json({ message: "Job not found", success: false });
     }

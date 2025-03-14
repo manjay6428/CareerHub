@@ -13,8 +13,6 @@ const LatestJobCards = ({
   jobType,
   salary,
 }) => {
-  console.log(id);
-
   const navigate = useNavigate();
   return (
     <div
