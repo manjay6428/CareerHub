@@ -51,16 +51,28 @@ const Navbar = () => {
         {/* Nav Items */}
         <div className="flex items-center gap-12">
           <ul className="flex font-medium items-center gap-6 text-gray-700">
-            {["Home", "Jobs", "Browse"].map((item) => (
-              <li
-                key={item}
-                className="hover:text-[#f83002] transition-colors duration-300 cursor-pointer"
-              >
-                <Link to={item === "Home" ? "/" : `/${item.toLowerCase()}`}>
-                  {item}
-                </Link>
-              </li>
-            ))}
+            {user && user.role === "recruiter" ? (
+              <>
+                <li className="hover:text-[#f83002] transition-colors duration-300 cursor-pointer">
+                  <Link to={"/admin/jobs"}>Jobs</Link>
+                </li>
+                <li className="hover:text-[#f83002] transition-colors duration-300 cursor-pointer">
+                  <Link to={"/admin/companies"}>Companies</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="hover:text-[#f83002] transition-colors duration-300 cursor-pointer">
+                  <Link to={"/"}>Home</Link>
+                </li>
+                <li className="hover:text-[#f83002] transition-colors duration-300 cursor-pointer">
+                  <Link to={"/jobs"}>Jobs</Link>
+                </li>
+                <li className="hover:text-[#f83002] transition-colors duration-300 cursor-pointer">
+                  <Link to={"/browse"}>Browse</Link>
+                </li>
+              </>
+            )}
           </ul>
 
           {/* User Actions */}
@@ -118,12 +130,14 @@ const Navbar = () => {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2 text-gray-600">
-                    <div className="flex items-center gap-2 hover:text-[#6A38C2] cursor-pointer">
-                      <User2 size={20} />
-                      <Button variant={"link"}>
-                        <Link to={"/profile"}>View Profile</Link>
-                      </Button>
-                    </div>
+                    {user && user.role !== "recruiter" && (
+                      <div className="flex items-center gap-2 hover:text-[#6A38C2] cursor-pointer">
+                        <User2 size={20} />
+                        <Button variant={"link"}>
+                          <Link to={"/profile"}>View Profile</Link>
+                        </Button>
+                      </div>
+                    )}
 
                     <div
                       className="flex items-center gap-2 hover:text-red-500 cursor-pointer"
