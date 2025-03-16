@@ -10,10 +10,12 @@ import { useSelector } from "react-redux";
 import ProfileUpdateDialog from "./ProfileUpdateDialog";
 import { getInitialName } from "@/utils/constant";
 import { AvatarFallback } from "@radix-ui/react-avatar";
+import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
 
-const isResume = true;
 const Profile = () => {
+  useGetAppliedJobs();
   const { user } = useSelector((state) => state.auth);
+  const { appliedJobs } = useSelector((state) => state.application);
   const [isOpen, setOpen] = useState(false);
 
   return (
@@ -68,7 +70,7 @@ const Profile = () => {
         </div>
         <div className=" grid max-w-sm w-full items-center gap-1.5">
           <Label className={" text-md font-bold"}>Resume</Label>
-          {isResume ? (
+          {user?.profile?.resume ? (
             <a
               href={user?.profile?.resume || ""}
               target="_blank"
@@ -83,7 +85,7 @@ const Profile = () => {
       </div>
       <div className=" max-w-4xl mx-auto bg-white rounded-2xl">
         <h1 className=" font-bold text-lg my-4">Applied jobs</h1>
-        <AppliedJobsTable />
+        <AppliedJobsTable appliedJobs={appliedJobs} />
       </div>
       <ProfileUpdateDialog isOpen={isOpen} setOpen={setOpen} />
     </div>

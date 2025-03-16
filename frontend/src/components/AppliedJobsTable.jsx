@@ -9,8 +9,6 @@ import {
   TableRow,
 } from "./ui/table";
 import { Badge } from "./ui/badge";
-import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
-import { useSelector } from "react-redux";
 
 const getStatusBadgeColor = (status) => {
   switch (status?.toLowerCase()) {
@@ -25,11 +23,7 @@ const getStatusBadgeColor = (status) => {
   }
 };
 
-const AppliedJobsTable = () => {
-  useGetAppliedJobs();
-  const { appliedJobs } = useSelector((state) => state.application);
-  console.log(appliedJobs);
-
+const AppliedJobsTable = ({ appliedJobs }) => {
   return (
     <div>
       <Table>
@@ -49,13 +43,13 @@ const AppliedJobsTable = () => {
             appliedJobs.map((item, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">
-                  {new Date(item.createdAt).toLocaleDateString()}
+                  {new Date(item?.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell>{item.job.title}</TableCell>
-                <TableCell>{item.job.company.name}</TableCell>
+                <TableCell>{item?.job?.title}</TableCell>
+                <TableCell>{item?.job?.company.name}</TableCell>
                 <TableCell className="text-right">
                   <Badge className={getStatusBadgeColor(item.status)}>
-                    {item.status}
+                    {item?.status}
                   </Badge>
                 </TableCell>
               </TableRow>
