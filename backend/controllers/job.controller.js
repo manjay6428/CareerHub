@@ -12,7 +12,6 @@ const postJob = async (req, res) => {
       jobType,
       position,
       company,
-      created_By,
       application,
     } = req.body;
     if (
@@ -100,7 +99,10 @@ const getJobsByIdForUsers = async (req, res) => {
 const getAdminCreatedJobs = async (req, res) => {
   try {
     const adminId = req.id;
-    const jobs = await Job.find({ created_By: adminId });
+    const jobs = await Job.find({ created_By: adminId })
+      .populate("company", "name location website")
+      .sort({ createdAt: -1 });
+
     if (!jobs) {
       return res
         .status(404)
@@ -115,4 +117,17 @@ const getAdminCreatedJobs = async (req, res) => {
   }
 };
 
-export { postJob, getAllJobs, getJobsByIdForUsers, getAdminCreatedJobs };
+const saveUnsaveJob = async (req, res) => {
+  try {
+    const { id } = req.body;
+  } catch (err) {
+    console.log(err);
+  }
+};
+export {
+  postJob,
+  getAllJobs,
+  getJobsByIdForUsers,
+  getAdminCreatedJobs,
+  saveUnsaveJob,
+};

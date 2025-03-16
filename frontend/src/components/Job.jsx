@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 const Job = ({ job }) => {
+  console.log(job);
+
   const navigate = useNavigate();
 
   const timeAgo = job?.createdAt
@@ -24,11 +26,7 @@ const Job = ({ job }) => {
       <div className=" flex items-center gap-2 my-2">
         <Button variant={"outline"} className=" p-6" size={"icon"}>
           <Avatar>
-            <AvatarImage
-              src={
-                "https://i.pinimg.com/736x/18/05/ce/1805ce3d6ff5fa2a329d8052ffa90707.jpg"
-              }
-            />
+            <AvatarImage src={job?.company?.logo} />
           </Avatar>
         </Button>
         <div>

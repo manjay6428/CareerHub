@@ -13,8 +13,6 @@ const registerUser = async (req, res) => {
         .json({ message: "Enter all the required fields", success: false });
     }
     const file = req.file;
-    // const fileUri = getDataUri(file);
-    // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     let cloudResponse;
     if (file) {

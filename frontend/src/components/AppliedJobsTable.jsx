@@ -9,42 +9,33 @@ import {
   TableRow,
 } from "./ui/table";
 import { Badge } from "./ui/badge";
+import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
+import { useSelector } from "react-redux";
 
-const appliedJobs = [
-  {
-    id: 1,
-    date: "13-03-25",
-    role: "Frontend Developer",
-    company: "Microsoft",
-    status: "Rejected",
-  },
-  {
-    id: 2,
-    date: "10-03-25",
-    role: "Backend Developer",
-    company: "Google",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    date: "08-03-25",
-    role: "Full Stack Developer",
-    company: "Amazon",
-    status: "Accepted",
-  },
-  {
-    id: 4,
-    date: "05-03-25",
-    role: "UI/UX Designer",
-    company: "Apple",
-    status: "Pending",
-  },
-];
+const getStatusBadgeColor = (status) => {
+  switch (status?.toLowerCase()) {
+    case "accepted":
+      return "bg-green-100 text-green-700";
+    case "pending":
+      return "bg-orange-100 text-orange-700";
+    case "rejected":
+      return "bg-red-100 text-red-700";
+    default:
+      return "";
+  }
+};
+
 const AppliedJobsTable = () => {
+  useGetAppliedJobs();
+  const { appliedJobs } = useSelector((state) => state.application);
+  console.log(appliedJobs);
+
   return (
     <div>
       <Table>
-        <TableCaption>A list of your applied jobs.</TableCaption>
+        <TableCaption>
+          {appliedJobs.length ? "A list of your applied jobs." : ""}
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Date</TableHead>
@@ -54,16 +45,28 @@ const AppliedJobsTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {appliedJobs.map((job, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{job.date}</TableCell>
-              <TableCell>{job.role}</TableCell>
-              <TableCell>{job.company}</TableCell>
-              <TableCell className="text-right">
-                <Badge>{job.status}</Badge>
+          {appliedJobs.length > 0 ? (
+            appliedJobs.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{item.job.title}</TableCell>
+                <TableCell>{item.job.company.name}</TableCell>
+                <TableCell className="text-right">
+                  <Badge className={getStatusBadgeColor(item.status)}>
+                    {item.status}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                You haven't applied any job yet .
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>
